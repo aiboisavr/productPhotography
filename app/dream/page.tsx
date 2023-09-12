@@ -81,7 +81,7 @@ export default function DreamPage() {
       },
       body: JSON.stringify({ imageUrl: fileUrl, theme, room }),
     });
-
+    
     let newPhoto = await res.json();
     if (res.status !== 200) {
       setError(newPhoto);
@@ -98,7 +98,7 @@ export default function DreamPage() {
       <Header />
       <main className="flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-4 sm:mb-0 mb-8">
         <h1 className="mx-auto max-w-4xl font-display text-4xl font-bold tracking-normal text-slate-100 sm:text-6xl mb-5">
-          Generate your <span className="text-blue-600">dream</span> room
+          Generate your <span className="text-blue-600">Product</span> photographs
         </h1>
         <ResizablePanel>
           <AnimatePresence mode="wait">
@@ -114,7 +114,7 @@ export default function DreamPage() {
                         alt="1 icon"
                       />
                       <p className="text-left font-medium">
-                        Choose your room theme.
+                        Choose your background theme.
                       </p>
                     </div>
                     <DropDown
@@ -152,7 +152,7 @@ export default function DreamPage() {
                         alt="1 icon"
                       />
                       <p className="text-left font-medium">
-                        Upload a picture of your room.
+                        Upload a picture of your product.
                       </p>
                     </div>
                   </div>
@@ -194,7 +194,7 @@ export default function DreamPage() {
               {restoredImage && originalPhoto && !sideBySide && (
                 <div className="flex sm:space-x-4 sm:flex-row flex-col">
                   <div>
-                    <h2 className="mb-1 font-medium text-lg">Original Room</h2>
+                    <h2 className="mb-1 font-medium text-lg">Original product photo</h2>
                     <Image
                       alt="original photo"
                       src={originalPhoto}
@@ -204,7 +204,7 @@ export default function DreamPage() {
                     />
                   </div>
                   <div className="sm:mt-0 mt-8">
-                    <h2 className="mb-1 font-medium text-lg">Generated Room</h2>
+                    <h2 className="mb-1 font-medium text-lg">Generated Product Photo</h2>
                     <a href={restoredImage} target="_blank" rel="noreferrer">
                       <Image
                         alt="restored photo"
@@ -247,7 +247,7 @@ export default function DreamPage() {
                     }}
                     className="bg-blue-500 rounded-full text-white font-medium px-4 py-2 mt-8 hover:bg-blue-500/80 transition"
                   >
-                    Generate New Room
+                    Generate New Photo
                   </button>
                 )}
                 {restoredLoaded && (
@@ -260,7 +260,7 @@ export default function DreamPage() {
                     }}
                     className="bg-white rounded-full text-black border font-medium px-4 py-2 mt-8 hover:bg-gray-100 transition"
                   >
-                    Download Generated Room
+                    Download Generated Photo
                   </button>
                 )}
               </div>

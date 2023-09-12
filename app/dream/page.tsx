@@ -197,7 +197,7 @@ export default function DreamPage() {
                     <h2 className="mb-1 font-medium text-lg">Original Room</h2>
                     <Image
                       alt="original photo"
-                      src={originalPhoto}
+                      src="https://pbxt.replicate.delivery/2atot9ew4q0vCClpnLfB0lX5PFMTdKSmqT8g2tkbrmeBiAHjA/output_1.png"
                       className="rounded-2xl relative w-full h-96"
                       width={475}
                       height={475}
@@ -208,7 +208,7 @@ export default function DreamPage() {
                     <a href={restoredImage} target="_blank" rel="noreferrer">
                       <Image
                         alt="restored photo"
-                        src={restoredImage}
+                        src="https://pbxt.replicate.delivery/2atot9ew4q0vCClpnLfB0lX5PFMTdKSmqT8g2tkbrmeBiAHjA/output_1.png"
                         className="rounded-2xl relative sm:mt-0 mt-2 cursor-zoom-in w-full h-96"
                         width={475}
                         height={475}

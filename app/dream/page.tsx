@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { UploadDropzone } from "react-uploader";
 import { Uploader } from "uploader";
 import { CompareSlider } from "../../components/CompareSlider";
@@ -14,7 +14,7 @@ import Toggle from "../../components/Toggle";
 import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
 import DropDown from "../../components/DropDown";
-import { roomType, rooms, themeType, themes } from "../../utils/dropdownTypes";
+import { roomType, rooms, themeType, themes, resolutionType, resolutions } from "../../utils/dropdownTypes";
 
 // Configuration for the uploader
 const uploader = Uploader({
@@ -52,9 +52,12 @@ export default function DreamPage() {
   const [sideBySide, setSideBySide] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState<string | null>(null);
-  const [theme, setTheme] = useState<themeType>("Modern");
-  const [room, setRoom] = useState<roomType>("Living Room");
-
+  const [resolution, setResolution] = useState<resolutionType>("512 * 512")
+  const [productName,setproductName] = useState<string | null> (null)
+  const [background, setbackground] = useState<string | null> (null)
+  const backgroundInputRef = useRef(null)
+  const productInputRef = useRef(null)
+  
   const UploadDropZone = () => (
     <UploadDropzone
       uploader={uploader}
@@ -70,6 +73,12 @@ export default function DreamPage() {
       height="250px"
     />
   );
+  const handleBackgroundInput = (event) => {
+    setbackground(event.target.value);
+  };
+  const handleproductNameInput = (event) => {
+    setproductName(event.target.value);
+  };
 
   async function generatePhoto(fileUrl: string) {
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -79,7 +88,7 @@ export default function DreamPage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ imageUrl: fileUrl, theme, room }),
+      body: JSON.stringify({ imageUrl: fileUrl, resolution, productName, background }),
     });
     
     let newPhoto = await res.json();
@@ -105,52 +114,52 @@ export default function DreamPage() {
             <motion.div className="flex justify-between items-center w-full flex-col mt-4">
               {!restoredImage && (
                 <>
+                  
                   <div className="space-y-4 w-full max-w-sm">
-                    <div className="flex mt-3 items-center space-x-3">
-                      <Image
-                        src="/number-1-white.svg"
-                        width={30}
-                        height={30}
-                        alt="1 icon"
-                      />
+                    <div className="flex mt-10 items-center space-x-3">
+                      
                       <p className="text-left font-medium">
-                        Choose your background theme.
+                        What is your product?
                       </p>
                     </div>
-                    <DropDown
-                      theme={theme}
-                      setTheme={(newTheme) =>
-                        setTheme(newTheme as typeof theme)
-                      }
-                      themes={themes}
-                    />
+                    <input 
+                    type="text" 
+                    className="inline-flex w-full justify-between items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+                    onChange={handleproductNameInput}
+                    >
+                    </input>
                   </div>
                   <div className="space-y-4 w-full max-w-sm">
                     <div className="flex mt-10 items-center space-x-3">
-                      <Image
-                        src="/number-2-white.svg"
-                        width={30}
-                        height={30}
-                        alt="1 icon"
-                      />
+                      
                       <p className="text-left font-medium">
-                        Choose your room type.
+                        Tell us about the background you need?
+                      </p>
+                    </div>
+                    <input 
+                    type="text" 
+                    className="inline-flex w-full justify-between items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+                    onChange={handleBackgroundInput}
+                    >
+                    </input>
+                  </div>
+                  <div className="space-y-4 w-full max-w-sm">
+                    <div className="flex mt-10 items-center space-x-3">
+                      
+                      <p className="text-left font-medium">
+                        Choose the output resolution required.
                       </p>
                     </div>
                     <DropDown
-                      theme={room}
-                      setTheme={(newRoom) => setRoom(newRoom as typeof room)}
-                      themes={rooms}
+                      theme={resolution}
+                      setTheme={(newResolution) => setResolution(newResolution as typeof resolution)}
+                      themes={resolutions}
                     />
                   </div>
+                  
                   <div className="mt-4 w-full max-w-sm">
                     <div className="flex mt-6 w-96 items-center space-x-3">
-                      <Image
-                        src="/number-3-white.svg"
-                        width={30}
-                        height={30}
-                        alt="1 icon"
-                      />
+                      
                       <p className="text-left font-medium">
                         Upload a picture of your product.
                       </p>
@@ -160,8 +169,8 @@ export default function DreamPage() {
               )}
               {restoredImage && (
                 <div>
-                  Here's your remodeled <b>{room.toLowerCase()}</b> in the{" "}
-                  <b>{theme.toLowerCase()}</b> theme!{" "}
+                  Here's your remodeled <b>{productName.toLowerCase()}</b> in the{" "}
+                  <b>{background.toLowerCase()}</b> theme!{" "}
                 </div>
               )}
               <div

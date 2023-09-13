@@ -28,3 +28,14 @@ export const rooms: roomType[] = [
   "Bathroom",
   "Gaming Room",
 ];
+
+export type resolutionType = 
+| "512 * 512"
+| "768 * 768"
+| "1024 * 1024"
+
+export const resolutions: resolutionType[] = [
+  "512 * 512",
+  "768 * 768",
+  "1024 * 1024"
+]

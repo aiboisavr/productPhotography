@@ -2,67 +2,34 @@ import { Ratelimit } from "@upstash/ratelimit";
 import redis from "../../utils/redis";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import Replicate from "replicate";
 
-// Create a new ratelimiter, that allows 5 requests per 24 hours
-const ratelimit = redis
-  ? new Ratelimit({
-      redis: redis,
-      limiter: Ratelimit.fixedWindow(5, "1440 m"),
-      analytics: true,
-    })
-  : undefined;
+const replicate = new Replicate({
+  auth: process.env.REPLICATE_API_KEY,
+});
 
 export async function POST(request: Request) {
-  // Rate Limiter Code
-  if (ratelimit) {
-    const headersList = headers();
-    const ipIdentifier = headersList.get("x-real-ip");
 
-    const result = await ratelimit.limit(ipIdentifier ?? "");
+  const { imageUrl, resolution, productName, background } = await request.json();
+  
 
-    if (!result.success) {
-      return new Response(
-        "Too many uploads in 1 day. Please try again in a 24 hours.",
-        {
-          status: 429,
-          headers: {
-            "X-RateLimit-Limit": result.limit,
-            "X-RateLimit-Remaining": result.remaining,
-          } as any,
-        }
-      );
+
+  // POST request to Replicate to start the image generation process
+
+  const reqObj = {
+    version: "92588c5d6edf4a743ea4f11200b4ffce1c1370c8c8be51357bf514f10f02fc82",
+    input: {
+      image_path: imageUrl,
+      prompt:`the ${productName} in a ${background}+, with many exquisite decorations+ around it-, creating an elegant and sophisticated atmosphere`,
+      negative_prompt:"low quality, out of frame, illustration, 3d, sepia, painting, cartoons, sketch, watermark, text, Logo, advertisement",
+      api_key:process.env.OPENAI_API_KEY,
+      pixel: resolution ? resolution : '512 * 512'
     }
   }
 
-  const { imageUrl, theme, room } = await request.json();
+  const startResponse = await replicate.predictions.create(reqObj);
 
-  // POST request to Replicate to start the image restoration generation process
-  let startResponse = await fetch("https://api.replicate.com/v1/predictions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Token " + process.env.REPLICATE_API_KEY,
-    },
-    body: JSON.stringify({
-      version:
-        "854e8727697a057c525cdb45ab037f64ecca770a1769cc52287c2e56472a247b",
-      input: {
-        image: imageUrl,
-        prompt:
-          room === "Gaming Room"
-            ? "a room for gaming with gaming computers, gaming consoles, and gaming chairs"
-            : `a ${theme.toLowerCase()} ${room.toLowerCase()}`,
-        a_prompt:
-          "best quality, extremely detailed, photo from Pinterest, interior, cinematic photo, ultra-detailed, ultra-realistic, award-winning",
-        n_prompt:
-          "longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality",
-      },
-    }),
-  });
-
-  let jsonStartResponse = await startResponse.json();
-
-  let endpointUrl = jsonStartResponse.urls.get;
+  let endpointUrl = startResponse.urls.get;
 
   // GET request to get the status of the image restoration process & return the result when it's ready
   let restoredImage: string | null = null;
@@ -88,6 +55,6 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json(
-    restoredImage ? restoredImage : "Failed to restore image"
+      restoredImage ? restoredImage : "Failed to generate image"
   );
 }

@@ -53,9 +53,9 @@ export default function DreamPage() {
   const [error, setError] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState<string | null>(null);
   const [resolution, setResolution] = useState<resolutionType>("512 * 512")
-  const [productName,setproductName] = useState<string | null> ("")
-  const [background, setbackground] = useState<string | null> ("")
-  const [finalPrompt, setFinalPrompt] = useState<string | null>('')
+  const [productName,setproductName] = useState<string> ("")
+  const [background, setbackground] = useState<string> ("")
+  const [finalPrompt, setFinalPrompt] = useState<string>("")
   
   const UploadDropZone = () => (
     <UploadDropzone
@@ -72,17 +72,17 @@ export default function DreamPage() {
       height="250px"
     />
   );
-  const handleBackgroundInput = (event) => {
+  const handleBackgroundInput = (event: any) => {
     setbackground(event.target.value);
     setFinalPrompt(productName + " " + event.target.value);
   };
 
-  const handleproductNameInput = (event) => {
+  const handleproductNameInput = (event: any) => {
     setproductName(event.target.value);
     setFinalPrompt(event.target.value + " " + background);
   };
 
-  const handleFinalPromptInput = (event) => {
+  const handleFinalPromptInput = (event: any) => {
     setFinalPrompt(event.target.value);
   };
 

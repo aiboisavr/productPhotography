@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import Replicate from "replicate";
 
 const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_KEY,
+  auth: process.env.REPLICATE_API_KEY ? process.env.REPLICATE_API_KEY : "",
 });
 
 export async function POST(request: Request) {

@@ -14,7 +14,7 @@ export const CompareSlider = ({
     <ReactCompareSlider
       itemOne={<ReactCompareSliderImage src={original} alt="original photo" />}
       itemTwo={<ReactCompareSliderImage src={restored} alt="generated photo" />}
-      portrait
+      portrait={false}
       className="flex w-[600px] mt-5 h-96"
     />
   );

@@ -53,10 +53,9 @@ export default function DreamPage() {
   const [error, setError] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState<string | null>(null);
   const [resolution, setResolution] = useState<resolutionType>("512 * 512")
-  const [productName,setproductName] = useState<string | null> (null)
-  const [background, setbackground] = useState<string | null> (null)
-  const backgroundInputRef = useRef(null)
-  const productInputRef = useRef(null)
+  const [productName,setproductName] = useState<string | null> ("")
+  const [background, setbackground] = useState<string | null> ("")
+  const [finalPrompt, setFinalPrompt] = useState<string | null>('')
   
   const UploadDropZone = () => (
     <UploadDropzone
@@ -75,9 +74,16 @@ export default function DreamPage() {
   );
   const handleBackgroundInput = (event) => {
     setbackground(event.target.value);
+    setFinalPrompt(productName + " " + event.target.value);
   };
+
   const handleproductNameInput = (event) => {
     setproductName(event.target.value);
+    setFinalPrompt(event.target.value + " " + background);
+  };
+
+  const handleFinalPromptInput = (event) => {
+    setFinalPrompt(event.target.value);
   };
 
   async function generatePhoto(fileUrl: string) {
@@ -88,7 +94,7 @@ export default function DreamPage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ imageUrl: fileUrl, resolution, productName, background }),
+      body: JSON.stringify({ imageUrl: fileUrl, resolution, finalPrompt }),
     });
     
     let newPhoto = await res.json();
@@ -156,7 +162,21 @@ export default function DreamPage() {
                       themes={resolutions}
                     />
                   </div>
-                  
+                  <div className="space-y-4 w-full max-w-sm">
+                    <div className="flex mt-10 items-center space-x-3">
+                      
+                      <p className="text-left font-medium">
+                        Final prompt, feel free to add more details to the final prompt
+                      </p>
+                    </div>
+                    <input 
+                    type="text" 
+                    className="inline-flex w-full justify-between items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-black"
+                    value={finalPrompt}
+                    onChange={handleFinalPromptInput}
+                    >
+                    </input>
+                  </div>
                   <div className="mt-4 w-full max-w-sm">
                     <div className="flex mt-6 w-96 items-center space-x-3">
                       
@@ -252,6 +272,7 @@ export default function DreamPage() {
                       setOriginalPhoto(null);
                       setRestoredImage(null);
                       setRestoredLoaded(false);
+                      setFinalPrompt('')
                       setError(null);
                     }}
                     className="bg-blue-500 rounded-full text-white font-medium px-4 py-2 mt-8 hover:bg-blue-500/80 transition"

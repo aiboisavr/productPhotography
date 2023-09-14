@@ -10,9 +10,7 @@ const replicate = new Replicate({
 
 export async function POST(request: Request) {
 
-  const { imageUrl, resolution, productName, background } = await request.json();
-  
-
+  const { imageUrl, resolution, finalPrompt } = await request.json();
 
   // POST request to Replicate to start the image generation process
 
@@ -20,7 +18,7 @@ export async function POST(request: Request) {
     version: "92588c5d6edf4a743ea4f11200b4ffce1c1370c8c8be51357bf514f10f02fc82",
     input: {
       image_path: imageUrl,
-      prompt:`the ${productName} in a ${background}+, with many exquisite decorations+ around it-, creating an elegant and sophisticated atmosphere`,
+      prompt: finalPrompt,
       negative_prompt:"low quality, out of frame, illustration, 3d, sepia, painting, cartoons, sketch, watermark, text, Logo, advertisement",
       api_key:process.env.OPENAI_API_KEY,
       pixel: resolution ? resolution : '512 * 512'

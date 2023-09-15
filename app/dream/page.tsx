@@ -89,19 +89,49 @@ export default function DreamPage() {
   async function generatePhoto(fileUrl: string) {
     await new Promise((resolve) => setTimeout(resolve, 200));
     setLoading(true);
-    const res = await fetch("/generate", {
+
+    setLoading(true);
+    let generateResponse = await fetch("/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ imageUrl: fileUrl, resolution, finalPrompt }),
     });
-    
-    let newPhoto = await res.json();
-    if (res.status !== 200) {
-      setError(newPhoto);
+
+    generateResponse = await generateResponse.json()
+
+    console.log(`generateResponse::::${JSON.stringify(generateResponse)}`)
+
+    let restoredImageFromResponse: string[]  = []
+    let res:any
+    while (restoredImageFromResponse.length==0) {
+      res = await fetch("/getResult", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl: generateResponse }),
+      });
+      console.log(`res---${res}`)
+
+      res = await res.json()
+      console.log(`res---${res}`)
+
+      if (res.status === "succeeded") {
+        restoredImageFromResponse = res.output;
+        break;
+      } else if (res.status === "failed") {
+        break;
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+
+    if (res.status === "failed") {
+      setError("Failed to fetch image");
     } else {
-      setRestoredImage(newPhoto[1]);
+      setRestoredImage(restoredImageFromResponse[1]);
     }
     setTimeout(() => {
       setLoading(false);

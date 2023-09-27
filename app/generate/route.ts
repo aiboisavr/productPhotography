@@ -14,7 +14,7 @@ const ratelimit = redis
     })
   : undefined;
 
-
+console.log(ratelimit)
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_KEY ? process.env.REPLICATE_API_KEY : "",

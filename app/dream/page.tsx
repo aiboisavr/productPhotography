@@ -127,8 +127,12 @@ export default function DreamPage() {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
-
-    if (res.status === "failed") {
+    
+    if (res.status===429)
+    {
+      setError("Too many uploads in a day,try again later");
+    }
+    else if (res.status === "failed") {
       setError("Failed to fetch image");
     } else {
       setRestoredImage(restoredImageFromResponse[1]);

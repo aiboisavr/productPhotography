@@ -14,7 +14,6 @@ const ratelimit = redis
     })
   : undefined;
 
-console.log(ratelimit)
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_KEY ? process.env.REPLICATE_API_KEY : "",
@@ -29,6 +28,7 @@ export async function POST(request: Request) {
     const ipIdentifier = headersList.get("x-real-ip");
 
     const result = await ratelimit.limit(ipIdentifier ?? "");
+    console.log(result)
 
     if (!result.success) {
       return new Response(

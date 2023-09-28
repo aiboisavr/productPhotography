@@ -15,6 +15,7 @@ import appendNewToName from "../../utils/appendNewToName";
 import downloadPhoto from "../../utils/downloadPhoto";
 import DropDown from "../../components/DropDown";
 import { roomType, rooms, themeType, themes, resolutionType, resolutions } from "../../utils/dropdownTypes";
+import { IKContext, IKImage, IKUpload } from 'imagekitio-react';
 
 // Configuration for the uploader
 const uploader = Uploader({
@@ -58,6 +59,8 @@ export default function DreamPage() {
   const [finalPrompt, setFinalPrompt] = useState<string>("")
   
   const UploadDropZone = () => (
+  
+
     <UploadDropzone
       uploader={uploader}
       options={options}
@@ -70,8 +73,14 @@ export default function DreamPage() {
       }}
       width="670px"
       height="250px"
-    />
+    /> 
   );
+
+
+
+
+
+
   const handleBackgroundInput = (event: any) => {
     setbackground(event.target.value);
     setFinalPrompt(productName + " " + event.target.value);
